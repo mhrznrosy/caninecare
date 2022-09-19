@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "27599058328",
+    "project_id": "sing-up-c449e",
+    "storage_bucket": "sing-up-c449e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27599058328:android:1a3523f7409ef2ec1727ed",
+        "android_client_info": {
+          "package_name": "com.example.canine_care"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27599058328-02lqtsf10vqf7h032m6rk7m1cp8bbuhd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqFxpcqf8JLDqNpx_5n_4bVG8NSDG5P20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27599058328-02lqtsf10vqf7h032m6rk7m1cp8bbuhd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
