@@ -1,3 +1,4 @@
+import 'package:canine_care/screens/forgetpassword.dart';
 import 'package:canine_care/screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:canine_care/screens/home_screen.dart';
@@ -154,7 +155,7 @@ class _MyLoginState extends State<MyLogin> {
                                   onPressed: () {
                                     Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) =>  MyRegister()),
+                                        MaterialPageRoute(builder: (context) =>  ForgotPassword()),
                                     );
                                   },
                                   child: Text(

@@ -1,72 +1,111 @@
 
+import 'package:canine_care/screens/login.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'dart:convert';
+import '../services/auth_service.dart';
+import '../services/auth_status.dart';
 
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+class ForgotPassword extends StatelessWidget {
 
-class AuthServices {
-  String _token;
-
-  Future<void> _authenticate(
-      String email, String password, String urlSegment) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    final url =
-        'https://identitytoolkit..com/v1/accounts:$urlSegment?key='AIzaSyDqFxpcqf8JLDqNpx_5n_4bVG8NSDG5P20
-    ';
-    final response = await http.post(
-      url,
-      body: json.encode(
-        {
-          'email': email,
-          'password': password,
-          'returnSecureToken': true,
-        },
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Reset Password",
+      home: Scaffold(
+        appBar: AppBar(title:  Text("Reset Password")),
+        body: const MyStatefulWidget(),
       ),
     );
-    final responseData = json.decode(response.body);
-    print(responseData);
-    _token = responseData['idToken'];
-    print('************************' + _token.toString());
-    try {
-      if (urlSegment == "signUp") {
-        sharedPreferences.setString("token", _token.toString());
-      }
-    } catch (e) {
-      print(e);
-    }
-    print("true");
   }
+}
 
-  Future<void> signUp(String email, String password) async {
-    return _authenticate(email, password, 'signUp');
-  }
+class MyStatefulWidget extends StatefulWidget {
+  const MyStatefulWidget({Key? key}) : super(key: key);
 
-  Future<void> login(String email, String password) async {
-    return _authenticate(email, password, 'signInWithPassword');
-  }
+  @override
+  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+}
 
-  Future<void> changePassword(String newPassword) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    print(newPassword);
-    _token = sharedPreferences.getString("token");
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:update?key='AIzaSyDqFxpcqf8JLDqNpx_5n_4bVG8NSDG5P20
-    ';
-    try {
-      await http.post(
-        url,
-        body: json.encode(
-          {
-            'idToken': _token,
-            'password': newPassword,
-            'returnSecureToken': true,
-          },
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+
+  final _key = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _authService = AuthenticationService();
+  var email = '';
+  //disposing all text controllers
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.lightBlueAccent,
+      body: Form(
+        key: _key,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Email Your Email',
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+              TextField(
+                controller: _emailController,
+                style: TextStyle(color: Colors.white),
+                keyboardType: TextInputType.emailAddress,
+                // ignore: missing_return
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  icon: Icon(
+                    Icons.mail,
+                    color: Colors.white,
+                  ),
+                  errorStyle: TextStyle(color: Colors.white),
+                  labelStyle: TextStyle(color: Colors.white),
+                  hintStyle: TextStyle(color: Colors.white),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  errorBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              RaisedButton(
+                child: Text('Send Email'),
+                onPressed: () async {
+                  final _status = await _authService.resetPassword(
+                      email: _emailController.text.trim());
+
+                  if (_status == AuthStatus.successful) {
+                    Navigator.pushNamed(context, 'login');
+                  } else {
+                    final error = AuthExceptionHandler.generateErrorMessage(_status);
+                    var snackBar = SnackBar(
+                      content: Text(error),
+                    );
+
+// Find the ScaffoldMessenger in the widget tree
+// and use it to show a SnackBar.
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+
+                },
+              ),
+              /*FlatButton(
+                child: Text('Sign In'),
+                onPressed: () {},
+              )*/
+            ],
+          ),
         ),
-      );
-    } catch (error) {
-      throw error;
-    }
+      ),
+    );
   }
 }
